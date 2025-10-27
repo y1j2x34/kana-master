@@ -248,6 +248,36 @@
         <p>日语五十音学习工具 &copy; 2025 | 用 ❤️ 制作</p>
     </footer>
 
+    <!-- 虚拟键盘浮动按钮 -->
+    <button id="virtualKeyboardBtn" class="virtual-keyboard-float-btn" title="虚拟键盘">
+        <span class="text-2xl">⌨️</span>
+    </button>
+
+    <!-- 虚拟键盘面板 -->
+    <div id="virtualKeyboard" class="virtual-keyboard hidden">
+        <div class="virtual-keyboard-header">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">虚拟假名输入法</h3>
+                <div class="flex items-center space-x-2">
+                    <button id="toggleRomajiBtn" class="keyboard-toggle-btn" title="显示/隐藏读音">
+                        <span class="text-sm">ABC</span>
+                    </button>
+                    <button id="closeKeyboardBtn" class="text-2xl hover:opacity-70 transition-opacity">✕</button>
+                </div>
+            </div>
+            <div class="flex space-x-2 mt-3">
+                <button class="keyboard-tab-btn active" data-kana-type="hiragana">平假名</button>
+                <button class="keyboard-tab-btn" data-kana-type="katakana">片假名</button>
+            </div>
+        </div>
+        <div class="virtual-keyboard-content">
+            <!-- 平假名键盘 -->
+            <div id="hiraganaKeyboard" class="kana-keyboard"></div>
+            <!-- 片假名键盘 -->
+            <div id="katakanaKeyboard" class="kana-keyboard hidden"></div>
+        </div>
+    </div>
+
     <script src="data.js"></script>
     <script src="app.js"></script>
 </body>

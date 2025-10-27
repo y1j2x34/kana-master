@@ -372,6 +372,235 @@ input[type="text"]:focus {
     opacity: 1;
 }
 
+/* 虚拟键盘浮动按钮 */
+.virtual-keyboard-float-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.virtual-keyboard-float-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.8);
+}
+
+.virtual-keyboard-float-btn:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* 虚拟键盘面板 */
+.virtual-keyboard {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 500px;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.dark .virtual-keyboard {
+    background: #1f2937;
+}
+
+.virtual-keyboard-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.dark .virtual-keyboard-header {
+    border-bottom-color: #374151;
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+}
+
+.keyboard-tab-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.dark .keyboard-tab-btn {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: #9ca3af;
+}
+
+.keyboard-tab-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.keyboard-tab-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.virtual-keyboard-content {
+    padding: 1rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.kana-keyboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.5rem;
+}
+
+.kana-key {
+    aspect-ratio: 1;
+    border: 2px solid #e5e7eb;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    min-height: 50px;
+}
+
+.dark .kana-key {
+    background: #374151;
+    border-color: #4b5563;
+    color: white;
+}
+
+.kana-key:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.kana-key:active {
+    transform: translateY(0);
+}
+
+.kana-key-romaji {
+    font-size: 0.6rem;
+    color: #9ca3af;
+    margin-top: 0.15rem;
+    display: none; /* 默认隐藏罗马音 */
+}
+
+.virtual-keyboard.show-romaji .kana-key-romaji {
+    display: block; /* 当开启显示时才显示 */
+}
+
+.kana-key:hover .kana-key-romaji {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* 罗马音切换按钮 */
+.keyboard-toggle-btn {
+    padding: 0.4rem 0.75rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.dark .keyboard-toggle-btn {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: #9ca3af;
+}
+
+.keyboard-toggle-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.keyboard-toggle-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+/* 键盘动画 */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.virtual-keyboard:not(.hidden) {
+    animation: slideUp 0.3s ease;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .virtual-keyboard {
+        width: 95%;
+        max-width: none;
+        bottom: 1rem;
+        right: 2.5%;
+        max-height: 400px;
+    }
+
+    .virtual-keyboard-float-btn {
+        width: 50px;
+        height: 50px;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .kana-keyboard {
+        grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+        gap: 0.4rem;
+    }
+
+    .kana-key {
+        font-size: 1rem;
+        min-height: 45px;
+    }
+
+    .kana-key-romaji {
+        font-size: 0.55rem;
+    }
+}
+
 /* 自动适配系统深色模式偏好 */
 @media (prefers-color-scheme: dark) {
     /* 只在没有明确设置 dark/light 类时生效 */
@@ -416,5 +645,26 @@ input[type="text"]:focus {
     
     html:not(.dark):not(.light) .stat-bar {
         background: #4b5563;
+    }
+
+    html:not(.dark):not(.light) .virtual-keyboard {
+        background: #1f2937;
+    }
+
+    html:not(.dark):not(.light) .virtual-keyboard-header {
+        border-bottom-color: #374151;
+        background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
+    }
+
+    html:not(.dark):not(.light) .keyboard-tab-btn {
+        background: #1f2937;
+        border-color: #4b5563;
+        color: #9ca3af;
+    }
+
+    html:not(.dark):not(.light) .kana-key {
+        background: #374151;
+        border-color: #4b5563;
+        color: white;
     }
 }

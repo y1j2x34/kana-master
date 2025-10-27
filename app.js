@@ -778,9 +778,216 @@ const uiController = {
     }
 };
 
+// 虚拟键盘系统
+const virtualKeyboard = {
+    // 键盘状态
+    isVisible: false,
+    currentKanaType: 'hiragana', // hiragana or katakana
+    showRomaji: false, // 默认不显示罗马音
+    
+    // 初始化虚拟键盘
+    init() {
+        this.generateKeyboard();
+        this.setupEventListeners();
+        this.loadPreferences();
+    },
+    
+    // 生成键盘
+    generateKeyboard() {
+        // 生成平假名键盘
+        this.generateKanaKeys('hiragana', 'hiraganaKeyboard');
+        // 生成片假名键盘
+        this.generateKanaKeys('katakana', 'katakanaKeyboard');
+    },
+    
+    // 生成假名按键
+    generateKanaKeys(kanaType, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        // 使用清音数据（基础46个假名）- 最常用的
+        const kanaData = seionData;
+        
+        kanaData.forEach(kana => {
+            const key = document.createElement('button');
+            key.className = 'kana-key';
+            
+            const kanaChar = kanaType === 'hiragana' ? kana.hiragana : kana.katakana;
+            const romajiText = kana.romaji[0];
+            
+            key.innerHTML = `
+                <span class="kana-key-char">${kanaChar}</span>
+                <span class="kana-key-romaji">${romajiText}</span>
+            `;
+            
+            // 点击事件 - 插入假名到输入框
+            key.addEventListener('click', () => {
+                this.insertKana(kanaChar);
+            });
+            
+            container.appendChild(key);
+        });
+    },
+    
+    // 插入假名到输入框
+    insertKana(kana) {
+        const answerInput = document.getElementById('answerInput');
+        if (!answerInput) return;
+        
+        // 获取当前光标位置
+        const cursorPos = answerInput.selectionStart;
+        const currentValue = answerInput.value;
+        
+        // 在光标位置插入假名
+        const newValue = currentValue.substring(0, cursorPos) + kana + currentValue.substring(cursorPos);
+        answerInput.value = newValue;
+        
+        // 设置新的光标位置（在插入的假名后面）
+        answerInput.selectionStart = answerInput.selectionEnd = cursorPos + kana.length;
+        
+        // 聚焦输入框
+        answerInput.focus();
+    },
+    
+    // 设置事件监听器
+    setupEventListeners() {
+        // 浮动按钮 - 切换键盘显示
+        const floatBtn = document.getElementById('virtualKeyboardBtn');
+        if (floatBtn) {
+            floatBtn.addEventListener('click', () => {
+                this.toggleKeyboard();
+            });
+        }
+        
+        // 关闭按钮
+        const closeBtn = document.getElementById('closeKeyboardBtn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                this.hideKeyboard();
+            });
+        }
+        
+        // 切换罗马音显示按钮
+        const toggleRomajiBtn = document.getElementById('toggleRomajiBtn');
+        if (toggleRomajiBtn) {
+            toggleRomajiBtn.addEventListener('click', () => {
+                this.toggleRomaji();
+            });
+        }
+        
+        // 切换平假名/片假名
+        document.querySelectorAll('[data-kana-type]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const kanaType = e.currentTarget.dataset.kanaType;
+                this.switchKanaType(kanaType);
+                
+                // 更新标签样式
+                document.querySelectorAll('[data-kana-type]').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+            });
+        });
+    },
+    
+    // 切换键盘显示/隐藏
+    toggleKeyboard() {
+        if (this.isVisible) {
+            this.hideKeyboard();
+        } else {
+            this.showKeyboard();
+        }
+    },
+    
+    // 显示键盘
+    showKeyboard() {
+        const keyboard = document.getElementById('virtualKeyboard');
+        if (keyboard) {
+            keyboard.classList.remove('hidden');
+            this.isVisible = true;
+        }
+    },
+    
+    // 隐藏键盘
+    hideKeyboard() {
+        const keyboard = document.getElementById('virtualKeyboard');
+        if (keyboard) {
+            keyboard.classList.add('hidden');
+            this.isVisible = false;
+        }
+    },
+    
+    // 切换平假名/片假名
+    switchKanaType(kanaType) {
+        this.currentKanaType = kanaType;
+        
+        const hiraganaKeyboard = document.getElementById('hiraganaKeyboard');
+        const katakanaKeyboard = document.getElementById('katakanaKeyboard');
+        
+        if (kanaType === 'hiragana') {
+            hiraganaKeyboard.classList.remove('hidden');
+            katakanaKeyboard.classList.add('hidden');
+        } else {
+            hiraganaKeyboard.classList.add('hidden');
+            katakanaKeyboard.classList.remove('hidden');
+        }
+    },
+    
+    // 切换罗马音显示
+    toggleRomaji() {
+        this.showRomaji = !this.showRomaji;
+        
+        const keyboard = document.getElementById('virtualKeyboard');
+        const toggleBtn = document.getElementById('toggleRomajiBtn');
+        
+        if (this.showRomaji) {
+            keyboard.classList.add('show-romaji');
+            toggleBtn.classList.add('active');
+        } else {
+            keyboard.classList.remove('show-romaji');
+            toggleBtn.classList.remove('active');
+        }
+        
+        // 保存偏好
+        this.savePreferences();
+    },
+    
+    // 保存用户偏好
+    savePreferences() {
+        utils.saveToLocalStorage('kana-keyboard-preferences', {
+            showRomaji: this.showRomaji,
+            currentKanaType: this.currentKanaType
+        });
+    },
+    
+    // 加载用户偏好
+    loadPreferences() {
+        const preferences = utils.loadFromLocalStorage('kana-keyboard-preferences');
+        
+        if (preferences) {
+            // 加载罗马音显示设置
+            if (preferences.showRomaji !== undefined) {
+                this.showRomaji = preferences.showRomaji;
+                
+                const keyboard = document.getElementById('virtualKeyboard');
+                const toggleBtn = document.getElementById('toggleRomajiBtn');
+                
+                if (this.showRomaji) {
+                    keyboard.classList.add('show-romaji');
+                    toggleBtn.classList.add('active');
+                }
+            }
+            
+            // 加载假名类型设置
+            if (preferences.currentKanaType) {
+                this.currentKanaType = preferences.currentKanaType;
+            }
+        }
+    }
+};
+
 // 初始化应用
 document.addEventListener('DOMContentLoaded', () => {
     uiController.init();
+    virtualKeyboard.init();
     console.log('日语五十音学习工具已启动！');
 });
 
