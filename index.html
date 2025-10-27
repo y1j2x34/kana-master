@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日语五十音学习工具 - Kana Master</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 min-h-screen transition-colors duration-300">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🎌</span>
+                <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Kana Master</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="statsBtn" class="btn-icon" title="统计数据">
+                    📊
+                </button>
+                <button id="themeToggle" class="btn-icon" title="切换主题">
+                    🌙
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 设置面板 -->
+        <div id="settingsPanel" class="card max-w-4xl mx-auto mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">练习设置</h2>
+            
+            <!-- 题型选择 -->
+            <div class="mb-6">
+                <label class="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">题型选择</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button class="option-btn active" data-type="kanaToRomaji">
+                        <span class="text-2xl mb-2">あ</span>
+                        <span class="text-sm">假名→发音</span>
+                    </button>
+                    <button class="option-btn" data-type="romajiToKana">
+                        <span class="text-2xl mb-2">a</span>
+                        <span class="text-sm">发音→假名</span>
+                    </button>
+                    <button class="option-btn" data-type="listening">
+                        <span class="text-2xl mb-2">🔊</span>
+                        <span class="text-sm">听音辨字</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 难度选择 -->
+            <div class="mb-6">
+                <label class="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">难度选择</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button class="option-btn active" data-difficulty="easy">
+                        <span class="text-2xl mb-2">🌸</span>
+                        <span class="text-sm">简单</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">仅清音 (46个)</span>
+                    </button>
+                    <button class="option-btn" data-difficulty="medium">
+                        <span class="text-2xl mb-2">🎋</span>
+                        <span class="text-sm">中等</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">含浊音 (71个)</span>
+                    </button>
+                    <button class="option-btn" data-difficulty="hard">
+                        <span class="text-2xl mb-2">🗻</span>
+                        <span class="text-sm">困难</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">全部 (107个)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 内容类型 -->
+            <div class="mb-6">
+                <label class="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">内容类型</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <button class="option-btn active" data-content="single">
+                        <span class="text-2xl mb-2">あ</span>
+                        <span class="text-sm">单字</span>
+                    </button>
+                    <button class="option-btn" data-content="word">
+                        <span class="text-2xl mb-2">さくら</span>
+                        <span class="text-sm">词语</span>
+                    </button>
+                    <button class="option-btn" data-content="sentence">
+                        <span class="text-2xl mb-2">こんにちは</span>
+                        <span class="text-sm">句子</span>
+                    </button>
+                    <button class="option-btn" data-content="mixed">
+                        <span class="text-2xl mb-2">🔀</span>
+                        <span class="text-sm">混合</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 开始按钮 -->
+            <div class="text-center">
+                <button id="startBtn" class="btn-primary text-xl px-12 py-4">
+                    开始练习 🚀
+                </button>
+            </div>
+        </div>
+
+        <!-- 答题区域 -->
+        <div id="quizPanel" class="hidden">
+            <!-- 进度条 -->
+            <div class="max-w-4xl mx-auto mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        已答题: <span id="answeredCount">0</span>
+                    </span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        正确率: <span id="accuracyRate">0%</span>
+                    </span>
+                </div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+            </div>
+
+            <!-- 题目卡片 -->
+            <div class="card max-w-2xl mx-auto">
+                <div class="text-center">
+                    <!-- 题目类型标识 -->
+                    <div class="mb-4">
+                        <span id="questionType" class="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-4 py-1 rounded-full text-sm font-medium"></span>
+                    </div>
+
+                    <!-- 题目内容 -->
+                    <div id="questionContent" class="mb-8">
+                        <div id="questionText" class="text-6xl md:text-8xl font-bold text-gray-800 dark:text-white mb-4"></div>
+                        <div id="questionHint" class="text-sm text-gray-500 dark:text-gray-400"></div>
+                    </div>
+
+                    <!-- 听音辨字的音频播放按钮 -->
+                    <div id="audioPlayBtn" class="hidden mb-8">
+                        <button class="btn-primary text-4xl px-8 py-4">
+                            🔊 播放
+                        </button>
+                    </div>
+
+                    <!-- 输入区域 -->
+                    <div id="inputArea" class="mb-6">
+                        <input 
+                            type="text" 
+                            id="answerInput" 
+                            class="w-full text-center text-2xl md:text-4xl p-4 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-purple-500 dark:bg-gray-700 dark:text-white transition-colors"
+                            placeholder="请输入答案..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <!-- 选项区域（听音辨字使用） -->
+                    <div id="optionsArea" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    </div>
+
+                    <!-- 反馈区域 -->
+                    <div id="feedback" class="hidden mb-6">
+                        <div id="feedbackIcon" class="text-6xl mb-2"></div>
+                        <div id="feedbackText" class="text-xl font-medium"></div>
+                        <div id="correctAnswer" class="text-sm text-gray-600 dark:text-gray-400 mt-2"></div>
+                    </div>
+
+                    <!-- 按钮组 -->
+                    <div class="flex justify-center space-x-4">
+                        <button id="submitBtn" class="btn-primary px-8 py-3">
+                            提交答案
+                        </button>
+                        <button id="nextBtn" class="hidden btn-secondary px-8 py-3">
+                            下一题
+                        </button>
+                        <button id="backBtn" class="btn-secondary px-8 py-3">
+                            返回设置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计面板 -->
+        <div id="statsPanel" class="hidden">
+            <div class="card max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">学习统计</h2>
+                    <button id="closeStatsBtn" class="btn-icon">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card">
+                        <div class="text-3xl mb-2">📝</div>
+                        <div class="text-2xl font-bold text-gray-800 dark:text-white" id="totalAnswered">0</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">总答题数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-3xl mb-2">✅</div>
+                        <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="totalCorrect">0</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">正确数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-3xl mb-2">📊</div>
+                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400" id="overallAccuracy">0%</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">总正确率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-3xl mb-2">⚡</div>
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avgSpeed">0s</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">平均速度</div>
+                    </div>
+                </div>
+
+                <!-- 详细统计 -->
+                <div class="space-y-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">各题型统计</h3>
+                        <div class="space-y-2" id="typeStats">
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">各难度统计</h3>
+                        <div class="space-y-2" id="difficultyStats">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 重置按钮 -->
+                <div class="mt-6 text-center">
+                    <button id="resetStatsBtn" class="btn-secondary px-6 py-2">
+                        重置统计数据
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="mt-12 pb-8 text-center text-gray-600 dark:text-gray-400">
+        <p>日语五十音学习工具 &copy; 2025 | 用 ❤️ 制作</p>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
