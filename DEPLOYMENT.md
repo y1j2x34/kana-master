@@ -15,7 +15,7 @@ git add .
 git commit -m "Initial commit: 日语五十音学习工具"
 
 # 添加远程仓库
-git remote add origin https://github.com/你的用户名/kana-master.git
+git remote add origin https://github.com/y1j2x34/kana-master.git
 
 # 推送到主分支
 git push -u origin main
@@ -43,7 +43,7 @@ git push -u origin master
 
 部署完成后，你的网站将在以下地址可访问：
 ```
-https://你的用户名.github.io/kana-master/
+https://y1j2x34.github.io/kana-master/
 ```
 
 ### 5. 自定义域名（可选）
@@ -58,7 +58,7 @@ https://你的用户名.github.io/kana-master/
 3. 在你的域名提供商处添加DNS记录：
    - 类型: CNAME
    - 主机: kana (或你想要的子域名)
-   - 值: 你的用户名.github.io
+   - 值: y1j2x34.github.io
 
 ## 本地测试
 

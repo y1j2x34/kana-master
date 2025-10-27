@@ -38,7 +38,7 @@ git init
 git add .
 git commit -m "🎌 Initial commit: 日语五十音学习工具"
 git branch -M main
-git remote add origin https://github.com/你的用户名/kana-master.git
+git remote add origin https://github.com/y1j2x34/kana-master.git
 git push -u origin main
 ```
 
@@ -50,7 +50,7 @@ git push -u origin main
 
 ### 4. 访问你的网站
 ```
-https://你的用户名.github.io/kana-master/
+https://y1j2x34.github.io/kana-master/
 ```
 
 ## 第一次使用

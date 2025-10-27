@@ -66,13 +66,13 @@
 git init
 git add .
 git commit -m "Initial commit"
-git remote add origin https://github.com/你的用户名/kana-master.git
+git remote add origin https://github.com/y1j2x34/kana-master.git
 git push -u origin main
 
 # 2. 在GitHub仓库设置中启用GitHub Pages（选择GitHub Actions）
 
 # 3. 访问你的网站
-# https://你的用户名.github.io/kana-master/
+# https://y1j2x34.github.io/kana-master/
 ```
 
 详细步骤见 [DEPLOYMENT.md](DEPLOYMENT.md)

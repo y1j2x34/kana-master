@@ -35,12 +35,12 @@
 ## 🚀 快速开始
 
 ### 在线使用
-访问 [GitHub Pages 部署地址](https://你的用户名.github.io/kana-master/)
+访问 [GitHub Pages 部署地址](https://y1j2x34.github.io/kana-master/)
 
 ### 本地运行
 1. 克隆仓库
 ```bash
-git clone https://github.com/你的用户名/kana-master.git
+git clone https://github.com/y1j2x34/kana-master.git
 cd kana-master
 ```
 
